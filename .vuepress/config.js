@@ -1,8 +1,8 @@
 module.exports = {
   lang: 'en-US',
-  title: 'Awesome NestJS v8 Boilerplate Documentation 🎉',
-  description: 'An ultimate and awesome nodejs boilerplate wrote in typescript',
-  base: process.env.DEPLOY_ENV === 'gh-pages' ? '/awesome-nest-boilerplate/' : '/',
+  title: 'TalentFlow',
+  description: 'Product can significantly enhance the efficiency of recruitment and ongoing talent management.',
+  base: process.env.DEPLOY_ENV === 'gh-pages' ? '/talent-flow/' : '/',
   themeConfig: {
     sidebar: [
       ['/', 'Introduction'],

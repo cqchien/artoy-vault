@@ -30,7 +30,7 @@ yarn install
 
 ### Database
 
-> Note: Awesome NestJS Boilerplate uses [TypeORM](https://github.com/typeorm/typeorm) with Data Mapper pattern.
+> Note: [TypeORM](https://github.com/typeorm/typeorm) with Data Mapper pattern.
 
 ### Configuration
 
@@ -102,7 +102,7 @@ yarn typeorm migration:generate ./src/database/migrations/MySQLMigrations
 These steps may work for [other databases](https://typeorm.io/#features) supported by TypeORM. If they work, let us know and we'll add it to the docs!
 
 ##### Docker Compose
-After completing the steps above, you can use [this docker-compose file](../docker-compose_mysql.yml) for awesome-nest-boilerplate with MySQL (instead of PostgreSQL).
+After completing the steps above, you can use [this docker-compose file](../docker-compose_mysql.yml) with MySQL (instead of PostgreSQL).
 
 ### Dev server
 

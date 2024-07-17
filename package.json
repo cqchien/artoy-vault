@@ -1,8 +1,8 @@
 {
-  "name": "awesome-nestjs-boilerplate",
+  "name": "talent-flow",
   "version": "10.0.0",
-  "description": "Awesome NestJS Boilerplate, Typescript, Postgres, TypeORM",
-  "author": "Narek Hakobyan <narek.hakobyan.07@gmail.com>",
+  "description": "Product can significantly enhance the efficiency of recruitment and ongoing talent management.",
+  "author": "Cao Chien <chien.cq>",
   "private": true,
   "license": "MIT",
   "scripts": {
