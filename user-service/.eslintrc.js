@@ -327,7 +327,7 @@ module.exports = {
   ignorePatterns: ['.eslintrc.js'],
   parserOptions: {
     ecmaVersion: 2022,
-    project: './tsconfig.eslint.json',
+    project: './user-service/tsconfig.eslint.json',
     sourceType: 'module',
   },
   extends: [

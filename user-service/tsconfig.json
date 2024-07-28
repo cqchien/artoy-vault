@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "target": "es2017", // or "es2020" or higher
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "declaration": false,
     "noImplicitAny": true,
     "removeComments": true,
@@ -14,9 +16,7 @@
     "esModuleInterop": true,
     "allowUnreachableCode": false,
     "noImplicitReturns": true,
-//    "exactOptionalPropertyTypes": true,
     "noImplicitThis": true,
-//    "noPropertyAccessFromIndexSignature": true,
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "strictPropertyInitialization": true,

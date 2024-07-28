@@ -1,0 +1,32 @@
+NAME = talent-flow
+VERSION = 1.0
+CUR_DIR = $(shell basename $(CURDIR))
+DOCKER_FILE ?= docker-compose.yml
+
+.PHONY: start dev_up dbmigrate
+
+info:
+	$(info CURRENT_BRANCH: $(CURRENT_BRANCH))
+	$(info DOCKER_FILE: $(DOCKER_FILE))
+
+dev_up:
+	yarn start:dev
+
+debug:
+	yarn debug:dev
+
+build:
+	yarn build
+
+bootstrap:
+	cp .env.example .env
+	yarn
+
+dbmigrate-generate:
+	yarn migration:create $$P
+
+dbmigrate:
+	yarn migration:run
+
+fork-kill-dev:
+    lsof -t -i tcp:3000 | xargs kill

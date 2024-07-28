@@ -25,7 +25,7 @@ export class ApiConfigService {
     return this.nodeEnv === 'test';
   }
 
-  private getNumber(key: string): number {
+  public getNumber(key: string): number {
     const value = this.get(key);
 
     try {
@@ -66,10 +66,6 @@ export class ApiConfigService {
     return this.getString('NODE_ENV');
   }
 
-  get fallbackLanguage(): string {
-    return this.getString('FALLBACK_LANGUAGE');
-  }
-
   get throttlerConfigs(): ThrottlerOptions {
     return {
       ttl: this.getDuration('THROTTLER_TTL', 'second'),
@@ -91,7 +87,7 @@ export class ApiConfigService {
       keepConnectionAlive: !this.isTest,
       dropSchema: this.isTest,
       type: 'postgres',
-      name: 'default',
+      name: this.getString('DB_DATABASE'),
       host: this.getString('DB_HOST'),
       port: this.getNumber('DB_PORT'),
       username: this.getString('DB_USERNAME'),
@@ -130,7 +126,6 @@ export class ApiConfigService {
   get authConfig() {
     return {
       privateKey: this.getString('JWT_PRIVATE_KEY'),
-      publicKey: this.getString('JWT_PUBLIC_KEY'),
       jwtExpirationTime: this.getNumber('JWT_EXPIRATION_TIME'),
     };
   }

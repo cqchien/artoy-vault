@@ -4,8 +4,6 @@ import type { ApiPropertyOptions } from '@nestjs/swagger';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
-  ArrayMaxSize,
-  ArrayMinSize,
   IsBoolean,
   IsDate,
   IsDefined,
@@ -25,7 +23,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import { supportedLanguageCount } from '../constants';
 import type { Constructor } from '../types';
 import { ApiEnumProperty, ApiUUIDProperty } from './property.decorators';
 import {
@@ -42,8 +39,6 @@ import {
   IsTmpKey as IsTemporaryKey,
   IsUndefinable,
 } from './validator.decorators';
-
-type RequireField<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
 interface IFieldOptions {
   each?: boolean;
@@ -216,42 +211,6 @@ export function BooleanFieldOptional(
   return applyDecorators(
     IsUndefinable(),
     BooleanField({ required: false, ...options }),
-  );
-}
-
-export function TranslationsField(
-  options: RequireField<Omit<ApiPropertyOptions, 'isArray'>, 'type'> &
-    IFieldOptions,
-): PropertyDecorator {
-  const decorators = [
-    ArrayMinSize(supportedLanguageCount),
-    ArrayMaxSize(supportedLanguageCount),
-    ValidateNested({
-      each: true,
-    }),
-    Type(() => options.type as FunctionConstructor),
-  ];
-
-  if (options.nullable) {
-    decorators.push(IsNullable());
-  } else {
-    decorators.push(NotEquals(null));
-  }
-
-  if (options.swagger !== false) {
-    decorators.push(ApiProperty({ isArray: true, ...options }));
-  }
-
-  return applyDecorators(...decorators);
-}
-
-export function TranslationsFieldOptional(
-  options: RequireField<Omit<ApiPropertyOptions, 'isArray'>, 'type'> &
-    IFieldOptions,
-): PropertyDecorator {
-  return applyDecorators(
-    IsUndefinable(),
-    TranslationsField({ required: false, ...options }),
   );
 }
 
