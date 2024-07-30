@@ -7,7 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 
-import { AuthModule } from './modules/auth/auth.module';
 import { HealthCheckerModule } from './modules/health-checker/health-checker.module';
 import { UserModule } from './modules/user/user.module';
 import { ApiConfigService } from './shared/services/api-config.service';
@@ -16,7 +15,6 @@ import { SharedModule } from './shared/shared.module';
 @Module({
   imports: [
     HealthCheckerModule,
-    AuthModule,
     UserModule,
     ThrottlerModule.forRootAsync({
       imports: [SharedModule],

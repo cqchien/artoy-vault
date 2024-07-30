@@ -2,13 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import type { FindOptionsWhere } from 'typeorm';
 import { Repository } from 'typeorm';
-import { Transactional } from 'typeorm-transactional';
 
 import type { PageDto } from '../../common/dto/page.dto';
-import { FileNotImageException, UserNotFoundException } from '../../exceptions';
-import { IFile } from '../../interfaces';
-import { ValidatorService } from '../../shared/services/validator.service';
-import { UserRegisterDto } from '../auth/dto/user-register.dto';
+import { UserNotFoundException } from '../../exceptions';
 import type { UserDto } from './dtos/user.dto';
 import type { UsersPageOptionsDto } from './dtos/users-page-options.dto';
 import { UserEntity } from './user.entity';
@@ -18,7 +14,6 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    private validatorService: ValidatorService,
   ) {}
 
   /**
@@ -48,22 +43,6 @@ export class UserService {
     }
 
     return queryBuilder.getOne();
-  }
-
-  @Transactional()
-  async createUser(
-    userRegisterDto: UserRegisterDto,
-    file?: IFile,
-  ): Promise<UserEntity> {
-    const user = this.userRepository.create(userRegisterDto);
-
-    if (file && !this.validatorService.isImage(file.mimetype)) {
-      throw new FileNotImageException();
-    }
-
-    await this.userRepository.save(user);
-
-    return user;
   }
 
   async getUsers(
