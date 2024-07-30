@@ -5,8 +5,8 @@ services:
     container_name: talent-flow-user-service-postgres
     restart: always
     environment:
-      POSTGRES_USERNAME: $DB_USERNAME
-      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_USERNAME: "${DB_USERNAME}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
       TZ: 'GMT'
       PGTZ: 'GMT'
     env_file:
