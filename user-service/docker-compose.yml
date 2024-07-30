@@ -14,9 +14,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres:/data/postgres
+      - 'db_data:/var/lib/postgresql/data'
       - ./init-data.sh:/docker-entrypoint-initdb.d/init-data.sh
 
 volumes:
-  postgres:
-    driver: local
+  db_data: null
