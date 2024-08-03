@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "target": "es2017", // or "es2020" or higher
     "module": "CommonJS",
     "moduleResolution": "node",
     "declaration": false,
@@ -31,10 +30,8 @@
     "strictNullChecks": true
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "ormconfig.ts" // Include this file if it's part of the project
   ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

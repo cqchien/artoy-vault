@@ -1,4 +1,4 @@
-NAME = talent-flow
+NAME = artoy_vault
 VERSION = 1.0
 CUR_DIR = $(shell basename $(CURDIR))
 DOCKER_FILE ?= docker-compose.yml
@@ -27,7 +27,7 @@ bootstrap:
 	yarn
 
 dbmigrate-generate:
-	yarn migration:create $$P
+	yarn migration:create src/database/migrations/${name}
 
 dbmigrate:
 	yarn migration:run
