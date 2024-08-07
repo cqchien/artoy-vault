@@ -1,42 +1,39 @@
-import { Column, Entity, OneToOne, VirtualColumn } from 'typeorm';
+import { Column, Entity, OneToOne } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
-import { RoleType } from '../../constants';
 import { UseDto } from '../../decorators';
-import type { UserDtoOptions } from './dtos/user.dto';
 import { UserDto } from './dtos/user.dto';
-import { UserSettingsEntity } from './user-settings.entity';
 
 @Entity({ name: 'users' })
 @UseDto(UserDto)
-export class UserEntity extends AbstractEntity<UserDto, UserDtoOptions> {
-  @Column({ nullable: true, type: 'varchar' })
-  firstName!: string | null;
-
-  @Column({ nullable: true, type: 'varchar' })
-  lastName!: string | null;
-
-  @Column({ type: 'enum', enum: RoleType, default: RoleType.USER })
-  role!: RoleType;
-
-  @Column({ unique: true, nullable: true, type: 'varchar' })
-  email!: string | null;
-
-  @Column({ nullable: true, type: 'varchar' })
-  password!: string | null;
-
-  @Column({ nullable: true, type: 'varchar' })
-  phone!: string | null;
-
+export class UserEntity extends AbstractEntity<UserDto> {
   @Column({ nullable: true, type: 'varchar' })
   avatar!: string | null;
 
-  @VirtualColumn({
-    query: (alias) =>
-      `SELECT CONCAT(${alias}.first_name, ' ', ${alias}.last_name)`,
-  })
-  fullName!: string;
+  @Column({ unique: true, nullable: false, type: 'varchar' })
+  email!: string;
 
-  @OneToOne(() => UserSettingsEntity, (userSettings) => userSettings.user)
-  settings?: UserSettingsEntity;
+  @Column({ nullable: false, type: 'varchar' })
+  password!: string;
+
+  @OneToOne(() => UserEntity, (userEntity) => userEntity.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  createdBy?: UserEntity | null;
+
+  @OneToOne(() => UserEntity, (userEntity) => userEntity.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  updatedBy?: UserEntity | null;
+
+  @Column({ nullable: true, type: 'timestamp' })
+  deletedAt?: Date | null;
+
+  @OneToOne(() => UserEntity, (userEntity) => userEntity.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  deletedBy?: UserEntity | null;
 }

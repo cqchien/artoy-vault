@@ -12,7 +12,7 @@
     "typeorm": "ts-node ./node_modules/typeorm/cli.js",
     "migration:generate": "yarn run typeorm migration:generate -d ormconfig.ts",
     "migration:create": "yarn run typeorm migration:create",
-    "migration:revert": "yarn run typeorm migration:revert",
+    "migration:revert": "yarn run typeorm migration:revert -d ormconfig.ts",
     "migration:run": "yarn run typeorm migration:run -d ormconfig.ts",
     "schema:drop": "yarn run typeorm schema:drop",
     "watch:dev": "nodemon --config nodemon.json",

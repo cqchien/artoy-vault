@@ -32,5 +32,8 @@ dbmigrate-generate:
 dbmigrate:
 	yarn migration:run
 
+dbmigrate-down:
+	yarn migration:revert
+
 fork-kill-dev:
     lsof -t -i tcp:3000 | xargs kill
