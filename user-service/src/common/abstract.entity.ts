@@ -5,17 +5,10 @@ import {
 } from 'typeorm';
 
 import type { Constructor } from '../types';
-import type { AbstractDto } from './dto/abstract.dto';
+import type { AbstractDomain } from './abstract.domain';
 
-/**
- * Abstract Entity
- *
- * @description This class is an abstract class for all entities.
- * It's experimental and recommended using it only in microservice architecture,
- * otherwise just delete and use your own entity.
- */
 export abstract class AbstractEntity<
-  DTO extends AbstractDto = AbstractDto,
+  D extends AbstractDomain = AbstractDomain,
   O = never,
 > {
   @PrimaryGeneratedColumn('uuid')
@@ -31,17 +24,17 @@ export abstract class AbstractEntity<
   })
   updatedAt!: Date;
 
-  private dtoClass?: Constructor<DTO, [AbstractEntity, O?]>;
+  private domainClass?: Constructor<D, [AbstractEntity, O?]>;
 
-  toDto(options?: O): DTO {
-    const dtoClass = this.dtoClass;
+  toDomain(options?: O): D {
+    const domainClass = this.domainClass;
 
-    if (!dtoClass) {
+    if (!domainClass) {
       throw new Error(
-        `You need to use @UseDto on class (${this.constructor.name}) be able to call toDto function`,
+        `You need to use @UseDomain on class (${this.constructor.name}) be able to call toDomain function`,
       );
     }
 
-    return new dtoClass(this, options);
+    return new domainClass(this, options);
   }
 }

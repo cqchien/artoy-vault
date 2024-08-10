@@ -1,32 +1,15 @@
 import 'source-map-support/register';
 
+import type { AbstractDomain } from 'common/abstract.domain';
 import { compact, map } from 'lodash';
-import type { ObjectLiteral } from 'typeorm';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 
 import type { AbstractEntity } from './common/abstract.entity';
-import type { AbstractDto } from './common/dto/abstract.dto';
-import { PageDto } from './common/dto/page.dto';
 import { PageMetaDto } from './common/dto/page-meta.dto';
 import type { PageOptionsDto } from './common/dto/page-options.dto';
-import type { KeyOfType } from './types';
 
 declare global {
   export type Uuid = string & { _uuidBrand: undefined };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-redundant-type-constituents
-  export type Todo = any & { _todoBrand: undefined };
-
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  interface Array<T> {
-    toDtos<Dto extends AbstractDto>(this: T[], options?: unknown): Dto[];
-
-    toPageDto<Dto extends AbstractDto>(
-      this: T[],
-      pageMetaDto: PageMetaDto,
-      // FIXME make option type visible from entity
-      options?: unknown,
-    ): PageDto<Dto>;
-  }
 }
 
 declare module 'typeorm' {
@@ -45,68 +28,22 @@ declare module 'typeorm' {
       pageOptionsDto: PageOptionsDto,
       options?: Partial<{ takeAll: boolean; skipCount: boolean }>,
     ): Promise<[Entity[], PageMetaDto]>;
-
-    leftJoinAndSelect<AliasEntity extends AbstractEntity, A extends string>(
-      this: SelectQueryBuilder<Entity>,
-      property: `${A}.${Exclude<
-        KeyOfType<AliasEntity, AbstractEntity>,
-        symbol
-      >}`,
-      alias: string,
-      condition?: string,
-      parameters?: ObjectLiteral,
-    ): this;
-
-    leftJoin<AliasEntity extends AbstractEntity, A extends string>(
-      this: SelectQueryBuilder<Entity>,
-      property: `${A}.${Exclude<
-        KeyOfType<AliasEntity, AbstractEntity>,
-        symbol
-      >}`,
-      alias: string,
-      condition?: string,
-      parameters?: ObjectLiteral,
-    ): this;
-
-    innerJoinAndSelect<AliasEntity extends AbstractEntity, A extends string>(
-      this: SelectQueryBuilder<Entity>,
-      property: `${A}.${Exclude<
-        KeyOfType<AliasEntity, AbstractEntity>,
-        symbol
-      >}`,
-      alias: string,
-      condition?: string,
-      parameters?: ObjectLiteral,
-    ): this;
-
-    innerJoin<AliasEntity extends AbstractEntity, A extends string>(
-      this: SelectQueryBuilder<Entity>,
-      property: `${A}.${Exclude<
-        KeyOfType<AliasEntity, AbstractEntity>,
-        symbol
-      >}`,
-      alias: string,
-      condition?: string,
-      parameters?: ObjectLiteral,
-    ): this;
   }
 }
 
-Array.prototype.toDtos = function <
-  Entity extends AbstractEntity<Dto>,
-  Dto extends AbstractDto,
->(options?: unknown): Dto[] {
-  return compact(
-    map<Entity, Dto>(this as Entity[], (item) => item.toDto(options as never)),
-  );
-};
-
-Array.prototype.toPageDto = function (
-  pageMetaDto: PageMetaDto,
-  options?: unknown,
-) {
-  return new PageDto(this.toDtos(options), pageMetaDto);
-};
+/**
+ * Converts an array of entities to an array of domain models.
+ *
+ * @param entities - Array of entities to be converted.
+ * @param options - Optional parameters for domain model construction.
+ * @returns Array of domain models.
+ */
+export function toDomains<
+  Entity extends AbstractEntity<Domain>,
+  Domain extends AbstractDomain,
+>(entities: Entity[], options?: unknown): Domain[] {
+  return compact(map(entities, (item) => item.toDomain(options as never)));
+}
 
 SelectQueryBuilder.prototype.searchByString = function (
   q,
