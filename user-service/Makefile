@@ -5,6 +5,14 @@ DOCKER_FILE ?= docker-compose.yml
 
 .PHONY: start dev_up dbmigrate
 
+ifeq (create-migrate,$(firstword $(MAKECMDGOALS)))
+  # use the rest as arguments for "run"
+  MIGRATION_NAME := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  # ...and turn them into do-nothing targets
+  $(eval $(MIGRATION_NAME):;@:)
+endif
+
+
 info:
 	$(info CURRENT_BRANCH: $(CURRENT_BRANCH))
 	$(info DOCKER_FILE: $(DOCKER_FILE))
@@ -26,13 +34,13 @@ bootstrap:
 	cp .env.example .env
 	yarn
 
-dbmigrate-generate:
-	yarn migration:create src/database/migrations/${name}
+create-migrate:
+	yarn migration:create src/database/migrations/${MIGRATION_NAME}
 
-dbmigrate:
+up-migrate:
 	yarn migration:run
 
-dbmigrate-down:
+down-migrate:
 	yarn migration:revert
 
 fork-kill-dev:
