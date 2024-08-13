@@ -3,14 +3,8 @@ import { Global, Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 
 import { ApiConfigService } from './services/api-config.service';
-import { GeneratorService } from './services/generator.service';
-import { ValidatorService } from './services/validator.service';
 
-const providers: Provider[] = [
-  ApiConfigService,
-  ValidatorService,
-  GeneratorService,
-];
+const providers: Provider[] = [ApiConfigService];
 
 @Global()
 @Module({
