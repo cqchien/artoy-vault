@@ -4,12 +4,10 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import type { Constructor } from '../types';
 import type { AbstractDomain } from './abstract.domain';
 
 export abstract class AbstractEntity<
   D extends AbstractDomain = AbstractDomain,
-  O = never,
 > {
   @PrimaryGeneratedColumn('uuid')
   id!: Uuid;
@@ -24,17 +22,11 @@ export abstract class AbstractEntity<
   })
   updatedAt!: Date;
 
-  private domainClass?: Constructor<D, [AbstractEntity, O?]>;
+  abstract domainClass: new (entity: AbstractEntity) => D;
 
-  toDomain(options?: O): D {
-    const domainClass = this.domainClass;
+  toDomain(): D {
+    const classDomain = this.domainClass;
 
-    if (!domainClass) {
-      throw new Error(
-        `You need to use @UseDomain on class (${this.constructor.name}) be able to call toDomain function`,
-      );
-    }
-
-    return new domainClass(this, options);
+    return new classDomain(this);
   }
 }

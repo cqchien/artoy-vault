@@ -132,7 +132,7 @@ export function StringField(
     );
   }
 
-  const minLength = options.minLength || 1;
+  const minLength = options.minLength ?? 1;
 
   decorators.push(MinLength(minLength, { each: options.each }));
 
@@ -276,12 +276,10 @@ export function EnumField<TEnum extends object>(
   return applyDecorators(...decorators);
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function ClassField<TClass extends Constructor>(
   getClass: () => TClass,
   options: Omit<ApiPropertyOptions, 'type'> & IClassFieldOptions = {},
 ): PropertyDecorator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const classValue = getClass();
 
   const decorators = [
@@ -327,7 +325,6 @@ export function EnumFieldOptional<TEnum extends object>(
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function ClassFieldOptional<TClass extends Constructor>(
   getClass: () => TClass,
   options: Omit<ApiPropertyOptions, 'type' | 'required'> &

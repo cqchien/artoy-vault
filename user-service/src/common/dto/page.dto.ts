@@ -1,17 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { ClassField } from '../../decorators';
 import { PageMetaDto } from './page-meta.dto';
 
 export class PageDto<T> {
   @ApiProperty({ isArray: true })
   readonly data: T[];
 
-  @ClassField(() => PageMetaDto)
+  @ApiProperty({
+    type: () => PageMetaDto,
+  })
   readonly meta: PageMetaDto;
 
-  constructor(data: T[], meta: PageMetaDto) {
+  @ApiProperty()
+  readonly extra?: Record<string, string | boolean | number>;
+
+  constructor(
+    data: T[],
+    meta: PageMetaDto,
+    extra?: Record<string, string | boolean | number>,
+  ) {
     this.data = data;
     this.meta = meta;
+    this.extra = extra;
   }
 }

@@ -18,8 +18,10 @@ info:
 	$(info DOCKER_FILE: $(DOCKER_FILE))
 
 dev_up:
-	docker compose -f $(DOCKER_FILE) up -d --remove-orphans --force-recreate
 	yarn watch:dev
+
+up:
+	docker compose -f $(DOCKER_FILE) up -d --remove-orphans --force-recreate
 
 down:
 	docker compose -f $(DOCKER_FILE) down

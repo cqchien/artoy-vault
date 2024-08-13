@@ -11,17 +11,16 @@ import { ExpressAdapter } from '@nestjs/platform-express';
 import compression from 'compression';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { initializeTransactionalContext } from 'typeorm-transactional';
 
 import { AppModule } from './app.module';
-import { HttpExceptionFilter } from './filters/bad-request.filter';
+import { SystemExceptionFilter } from './filters/exception.filter';
 import { QueryFailedFilter } from './filters/query-failed.filter';
+import { SerializerInterceptor } from './interceptors/serializer-interceptor';
 import { setupSwagger } from './setup-swagger';
 import { ApiConfigService } from './shared/services/api-config.service';
 import { SharedModule } from './shared/shared.module';
 
 export async function bootstrap(): Promise<NestExpressApplication> {
-  initializeTransactionalContext();
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
     new ExpressAdapter(),
@@ -37,11 +36,14 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   const reflector = app.get(Reflector);
 
   app.useGlobalFilters(
-    new HttpExceptionFilter(reflector),
+    new SystemExceptionFilter(reflector),
     new QueryFailedFilter(reflector),
   );
 
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(reflector),
+    new SerializerInterceptor(),
+  );
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -59,10 +61,7 @@ export async function bootstrap(): Promise<NestExpressApplication> {
     setupSwagger(app);
   }
 
-  // Starts listening for shutdown hooks
-  if (!configService.isDevelopment) {
-    app.enableShutdownHooks();
-  }
+  app.enableShutdownHooks();
 
   const port = configService.appConfig.port;
   await app.listen(port);

@@ -3,13 +3,13 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Inject,
   Query,
-  ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { PageDto } from '../../../common/dto/page.dto';
-import { ApiPageResponse, Auth } from '../../../decorators';
+import { ApiPageResponse } from '../../../decorators/api-page-response.decorator';
 import { IUserService } from '../interfaces/user.service.inteface';
 import { UserPaginationOptionsDto } from './dtos/request/users-pagination.dto';
 import { UserDto } from './dtos/response/user.dto';
@@ -17,17 +17,19 @@ import { UserDto } from './dtos/response/user.dto';
 @Controller('users')
 @ApiTags('users')
 export class UserController {
-  constructor(private userService: IUserService) {}
+  constructor(
+    @Inject('IUserService')
+    private userService: IUserService,
+  ) {}
 
   @Get()
-  @Auth()
   @HttpCode(HttpStatus.OK)
   @ApiPageResponse({
-    description: 'Get users list',
-    type: PageDto,
+    description: 'Get list users',
+    type: UserDto,
   })
   async getUsers(
-    @Query(new ValidationPipe({ transform: true }))
+    @Query()
     pageOptionsDto: UserPaginationOptionsDto,
   ): Promise<PageDto<UserDto>> {
     const [users, pageMetaDto] =

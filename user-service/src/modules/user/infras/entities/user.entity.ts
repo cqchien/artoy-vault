@@ -1,11 +1,9 @@
 import { Column, Entity, OneToOne } from 'typeorm';
 
 import { AbstractEntity } from '../../../../common/abstract.entity';
-import { UseDomain } from '../../../../decorators';
 import { UserDomain } from '../../domains/user.domain';
 
 @Entity({ name: 'users' })
-@UseDomain(UserDomain)
 export class UserEntity extends AbstractEntity<UserDomain> {
   @Column({ nullable: true, type: 'varchar' })
   avatar!: string | null;
@@ -27,4 +25,6 @@ export class UserEntity extends AbstractEntity<UserDomain> {
 
   @OneToOne(() => UserEntity, (userEntity) => userEntity.id)
   deletedBy?: UserEntity | null;
+
+  domainClass = UserDomain;
 }

@@ -2,7 +2,7 @@ import 'source-map-support/register';
 
 import type { AbstractDomain } from 'common/abstract.domain';
 import { compact, map } from 'lodash';
-import { Brackets, SelectQueryBuilder } from 'typeorm';
+import { SelectQueryBuilder } from 'typeorm';
 
 import type { AbstractEntity } from './common/abstract.entity';
 import { PageMetaDto } from './common/dto/page-meta.dto';
@@ -15,14 +15,6 @@ declare global {
 declare module 'typeorm' {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   interface SelectQueryBuilder<Entity> {
-    searchByString(
-      q: string,
-      columnNames: string[],
-      options?: {
-        formStart: boolean;
-      },
-    ): this;
-
     paginate(
       this: SelectQueryBuilder<Entity>,
       pageOptionsDto: PageOptionsDto,
@@ -41,35 +33,9 @@ declare module 'typeorm' {
 export function toDomains<
   Entity extends AbstractEntity<Domain>,
   Domain extends AbstractDomain,
->(entities: Entity[], options?: unknown): Domain[] {
-  return compact(map(entities, (item) => item.toDomain(options as never)));
+>(entities: Entity[]): Domain[] {
+  return compact(map(entities, (item) => item.toDomain()));
 }
-
-SelectQueryBuilder.prototype.searchByString = function (
-  q,
-  columnNames,
-  options,
-) {
-  if (!q) {
-    return this;
-  }
-
-  this.andWhere(
-    new Brackets((qb) => {
-      for (const item of columnNames) {
-        qb.orWhere(`${item} ILIKE :q`);
-      }
-    }),
-  );
-
-  if (options?.formStart) {
-    this.setParameter('q', `${q}%`);
-  } else {
-    this.setParameter('q', `%${q}%`);
-  }
-
-  return this;
-};
 
 SelectQueryBuilder.prototype.paginate = async function (
   pageOptionsDto: PageOptionsDto,
