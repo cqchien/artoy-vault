@@ -3,7 +3,7 @@ VERSION = 1.0
 CUR_DIR = $(shell basename $(CURDIR))
 DOCKER_FILE ?= docker-compose.yml
 
-.PHONY: start dev_up dbmigrate
+.PHONY: start dev-up create-migrate
 
 ifeq (create-migrate,$(firstword $(MAKECMDGOALS)))
   # use the rest as arguments for "run"
@@ -17,7 +17,7 @@ info:
 	$(info CURRENT_BRANCH: $(CURRENT_BRANCH))
 	$(info DOCKER_FILE: $(DOCKER_FILE))
 
-dev_up:
+dev-up:
 	yarn watch:dev
 
 up:
