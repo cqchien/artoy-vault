@@ -28,7 +28,7 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   );
   app.enable('trust proxy'); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
   app.use(helmet());
-  app.setGlobalPrefix('/api');
+  app.setGlobalPrefix('/admin');
   app.use(compression());
   app.use(morgan('combined'));
   app.enableVersioning();

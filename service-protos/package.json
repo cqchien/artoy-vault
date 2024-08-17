@@ -1,0 +1,31 @@
+{
+  "name": "@cqchien/artoy-vault-service-protos",
+  "version": "1.0.2",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cqchien/artoy-vault-service-protos.git"
+  },
+  "author": "cqchien",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && mkdirp dist && chmod +x ./build.sh && ./build.sh && tsc && cp -r src ./dist/src",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "mkdirp": "^3.0.1",
+    "rimraf": "^6.0.1",
+    "ts-proto": "^1.181.1",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.11.1",
+    "protobufjs": "^7.3.2"
+  }
+}
