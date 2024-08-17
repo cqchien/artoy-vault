@@ -21,7 +21,7 @@
   "devDependencies": {
     "mkdirp": "^3.0.1",
     "rimraf": "^6.0.1",
-    "ts-proto": "^1.181.1",
+    "ts-proto": "^2.0.2",
     "typescript": "^5.5.4"
   },
   "dependencies": {
