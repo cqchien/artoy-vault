@@ -78,7 +78,7 @@
     "@types/mime-types": "^2.1.4",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.10.6",
-    "@types/passport-jwt": "^3.0.13",
+    "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^2.0.16",
     "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
