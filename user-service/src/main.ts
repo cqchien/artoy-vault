@@ -1,4 +1,9 @@
 /* eslint-disable unicorn/prefer-top-level-await */
+import './boilerplate.polyfill';
+
+import { join } from 'node:path';
+
+import type { INestMicroservice } from '@nestjs/common';
 import {
   ClassSerializerInterceptor,
   HttpStatus,
@@ -6,32 +11,25 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
-import type { NestExpressApplication } from '@nestjs/platform-express';
-import { ExpressAdapter } from '@nestjs/platform-express';
-import compression from 'compression';
-import helmet from 'helmet';
-import morgan from 'morgan';
+import { Transport } from '@nestjs/microservices';
 
 import { AppModule } from './app.module';
 import { SystemExceptionFilter } from './filters/exception.filter';
 import { QueryFailedFilter } from './filters/query-failed.filter';
 import { SerializerInterceptor } from './interceptors/serializer-interceptor';
-import { setupSwagger } from './setup-swagger';
-import { ApiConfigService } from './shared/services/api-config.service';
-import { SharedModule } from './shared/shared.module';
+import { protobufPackage } from './modules/user/user.pb';
 
-export async function bootstrap(): Promise<NestExpressApplication> {
-  const app = await NestFactory.create<NestExpressApplication>(
-    AppModule,
-    new ExpressAdapter(),
-    { cors: true },
-  );
-  app.enable('trust proxy'); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
-  app.use(helmet());
-  app.setGlobalPrefix('/admin');
-  app.use(compression());
-  app.use(morgan('combined'));
-  app.enableVersioning();
+export async function bootstrap(): Promise<INestMicroservice> {
+  const app = await NestFactory.createMicroservice(AppModule, {
+    transport: Transport.GRPC,
+    options: {
+      package: protobufPackage,
+      protoPath: join(
+        'node_modules/@cqchien/artoy-vault-service-protos/dist/src/proto/user-service/user.proto',
+      ),
+      url: `0.0.0.0:${process.env.PORT}`,
+    },
+  });
 
   const reflector = app.get(Reflector);
 
@@ -55,18 +53,11 @@ export async function bootstrap(): Promise<NestExpressApplication> {
     }),
   );
 
-  const configService = app.select(SharedModule).get(ApiConfigService);
-
-  if (configService.documentationEnabled) {
-    setupSwagger(app);
-  }
-
   app.enableShutdownHooks();
 
-  const port = configService.appConfig.port;
-  await app.listen(port);
+  await app.listen();
 
-  console.info(`Server is running on ${await app.getUrl()}`);
+  console.info(`User Service is running on port ${process.env.PORT}`);
 
   return app;
 }

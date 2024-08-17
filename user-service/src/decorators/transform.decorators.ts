@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Transform } from 'class-transformer';
-import { parsePhoneNumber } from 'libphonenumber-js';
 import { castArray, isArray, isNil, map, trim } from 'lodash';
 
 /**
@@ -17,10 +17,13 @@ export function Trim(): PropertyDecorator {
     const value = params.value as string[] | string;
 
     if (isArray(value)) {
-      return map(value, (v) => trim(v).replaceAll(/\s\s+/g, ' '));
+      return map(
+        value,
+        (v): string => trim(v).replaceAll(/\s\s+/g, ' ') as string,
+      );
     }
 
-    return trim(value).replaceAll(/\s\s+/g, ' ');
+    return trim(value).replaceAll(/\s\s+/g, ' ') as string;
   });
 }
 
@@ -37,7 +40,7 @@ export function ToBoolean(): PropertyDecorator {
         }
 
         default: {
-          return params.value;
+          return params.value as unknown;
         }
       }
     },
@@ -76,7 +79,7 @@ export function ToInt(): PropertyDecorator {
 export function ToArray(): PropertyDecorator {
   return Transform(
     (params) => {
-      const value = params.value;
+      const value = params.value as unknown;
 
       if (isNil(value)) {
         return [];
@@ -91,7 +94,7 @@ export function ToArray(): PropertyDecorator {
 export function ToLowerCase(): PropertyDecorator {
   return Transform(
     (params) => {
-      const value = params.value;
+      const value = params.value as string[] | string;
 
       if (!value) {
         return;
@@ -112,7 +115,7 @@ export function ToLowerCase(): PropertyDecorator {
 export function ToUpperCase(): PropertyDecorator {
   return Transform(
     (params) => {
-      const value = params.value;
+      const value = params.value as string[] | string;
 
       if (!value) {
         return;
@@ -128,8 +131,4 @@ export function ToUpperCase(): PropertyDecorator {
       toClassOnly: true,
     },
   );
-}
-
-export function PhoneNumberSerializer(): PropertyDecorator {
-  return Transform((params) => parsePhoneNumber(params.value as string).number);
 }

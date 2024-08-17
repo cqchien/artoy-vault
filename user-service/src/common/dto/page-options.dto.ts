@@ -2,22 +2,18 @@ import { Order } from '../../constants';
 import { EnumFieldOptional, NumberFieldOptional } from '../../decorators';
 
 export class PageOptionsDto {
-  @EnumFieldOptional(() => Order, {
-    default: Order.ASC,
-  })
+  @EnumFieldOptional(() => Order)
   readonly order: Order = Order.ASC;
 
   @NumberFieldOptional({
-    minimum: 1,
-    default: 1,
+    min: 1,
     int: true,
   })
   readonly page: number = 1;
 
   @NumberFieldOptional({
-    minimum: 1,
-    maximum: 50,
-    default: 10,
+    min: 1,
+    max: 50,
     int: true,
   })
   readonly take: number = 10;

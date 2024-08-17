@@ -20,6 +20,10 @@ info:
 dev-up:
 	yarn watch:dev
 
+install-proto:
+	yarn proto:install
+	yarn proto:user
+	
 up:
 	docker compose -f $(DOCKER_FILE) up -d --remove-orphans --force-recreate
 
@@ -34,6 +38,8 @@ build:
 
 bootstrap:
 	cp .env.example .env
+	yarn proto:install
+	yarn proto:user
 	yarn
 
 create-migrate:

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable @typescript-eslint/no-namespace */
 import 'source-map-support/register';
 
 import type { AbstractDomain } from 'common/abstract.domain';
@@ -10,6 +12,28 @@ import type { PageOptionsDto } from './common/dto/page-options.dto';
 
 declare global {
   export type Uuid = string & { _uuidBrand: undefined };
+
+  namespace NodeJS {
+    interface ProcessEnv {
+      PORT: number;
+      NODE_ENV: 'development' | 'staging' | 'production';
+      SENTE_API_URL: string;
+      OSQUAD_API_URL?: string;
+      GUA_NAME: string;
+      SENTE_SECRET_KEY: string;
+      BASIC_AUTH_USERNAME: string;
+      BASIC_AUTH_PASSWORD: string;
+      OGEK_URL?: string;
+      OSQUAD_API_USERNAME?: string;
+      OSQUAD_API_PASSWORD?: string;
+      DB_HOST: string;
+      DB_PORT: number;
+      DB_USERNAME: string;
+      DB_PASSWORD: string;
+      DB_DATABASE: string;
+      ENABLE_ORM_LOGS: boolean;
+    }
+  }
 }
 
 declare module 'typeorm' {

@@ -106,20 +106,10 @@ export class ApiConfigService {
     };
   }
 
-  get documentationEnabled(): boolean {
-    return this.getBoolean('ENABLE_DOCUMENTATION');
-  }
-
   get authConfig() {
     return {
       privateKey: this.getString('JWT_PRIVATE_KEY'),
       jwtExpirationTime: this.getNumber('JWT_EXPIRATION_TIME'),
-    };
-  }
-
-  get appConfig() {
-    return {
-      port: this.getString('PORT'),
     };
   }
 
