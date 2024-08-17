@@ -1,13 +1,12 @@
 {
   "name": "@cqchien/artoy-vault-service-protos",
-  "version": "1.0.2",
-  "main": "index.js",
+  "version": "1.0.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/cqchien/artoy-vault.git"
   },
   "author": "chien.cq",
-  "files": [
+  "files": [  
     "dist"
   ],
   "types": "dist/index.d.ts",
