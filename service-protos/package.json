@@ -4,9 +4,9 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cqchien/artoy-vault-service-protos.git"
+    "url": "https://github.com/cqchien/artoy-vault.git"
   },
-  "author": "cqchien",
+  "author": "chien.cq",
   "files": [
     "dist"
   ],
