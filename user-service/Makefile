@@ -1,4 +1,4 @@
-NAME = artoy_vault
+NAME = artoy_vault_user_service
 VERSION = 1.0
 CUR_DIR = $(shell basename $(CURDIR))
 DOCKER_FILE ?= docker-compose.yml
