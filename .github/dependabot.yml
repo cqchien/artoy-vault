@@ -4,8 +4,7 @@ updates:
   - package-ecosystem: npm
     directory: "/service-protos"
     schedule:
-      interval: daily
-    open-pull-requests-limit: 10
+      interval: weekly
     target-branch: "main"
     labels:
       - dependabot
@@ -14,8 +13,16 @@ updates:
   - package-ecosystem: npm
     directory: "/user-service"
     schedule:
-      interval: daily
-    open-pull-requests-limit: 10
+      interval: weekly
+    target-branch: "main"
+    labels:
+      - dependabot
+
+  # Dependabot for api-gateway directory
+  - package-ecosystem: npm
+    directory: "/api-gateway"
+    schedule:
+      interval: weekly
     target-branch: "main"
     labels:
       - dependabot

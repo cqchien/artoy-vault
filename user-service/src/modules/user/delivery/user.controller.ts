@@ -1,6 +1,5 @@
 import { Controller, Inject, Query } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import { ApiTags } from '@nestjs/swagger';
 
 import { PageDto } from '../../../common/dto/page.dto';
 import { IUserService } from '../interfaces/user.service.inteface';
@@ -9,7 +8,6 @@ import { UserPaginationOptionsDto } from './dtos/request/users-pagination.dto';
 import { UserDto } from './dtos/response/user.dto';
 
 @Controller('admin/users')
-@ApiTags('users')
 export class UserController {
   constructor(
     @Inject('IUserService')
