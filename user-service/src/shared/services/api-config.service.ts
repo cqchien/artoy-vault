@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { ThrottlerOptions } from '@nestjs/throttler';
 import type { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { isNil } from 'lodash';
-import type { Units } from 'parse-duration';
-import { default as parse } from 'parse-duration';
 
 import { SnakeNamingStrategy } from '../../snake-naming.strategy';
 
@@ -34,17 +31,6 @@ export class ApiConfigService {
     }
   }
 
-  private getDuration(key: string, format?: Units): number {
-    const value = this.getString(key);
-    const duration = parse(value, format);
-
-    if (duration === undefined) {
-      throw new Error(`${key} environment variable is not a valid duration`);
-    }
-
-    return duration;
-  }
-
   private getBoolean(key: string): boolean {
     const value = this.get(key);
 
@@ -63,14 +49,6 @@ export class ApiConfigService {
 
   get nodeEnv(): string {
     return this.getString('NODE_ENV');
-  }
-
-  get throttlerConfigs(): ThrottlerOptions {
-    return {
-      ttl: this.getDuration('THROTTLER_TTL', 'second'),
-      limit: this.getNumber('THROTTLER_LIMIT'),
-      // storage: new ThrottlerStorageRedisService(new Redis(this.redis)),
-    };
   }
 
   get postgresConfig(): TypeOrmModuleOptions {

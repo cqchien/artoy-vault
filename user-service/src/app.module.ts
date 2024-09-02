@@ -2,7 +2,6 @@ import './boilerplate.polyfill';
 
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { HealthCheckerModule } from './modules/health-checker/health-checker.module';
@@ -14,13 +13,6 @@ import { SharedModule } from './shared/shared.module';
   imports: [
     HealthCheckerModule,
     UserModule,
-    ThrottlerModule.forRootAsync({
-      imports: [SharedModule],
-      useFactory: (configService: ApiConfigService) => ({
-        throttlers: [configService.throttlerConfigs],
-      }),
-      inject: [ApiConfigService],
-    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
