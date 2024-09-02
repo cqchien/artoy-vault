@@ -1,4 +1,4 @@
-import { Controller, Inject, Query } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 
 import { PageDto } from '../../../common/dto/page.dto';
@@ -7,7 +7,6 @@ import { USER_SERVICE_NAME } from '../user.pb';
 import { UserPaginationOptionsDto } from './dtos/request/users-pagination.dto';
 import { UserDto } from './dtos/response/user.dto';
 
-@Controller('admin/users')
 export class UserController {
   constructor(
     @Inject('IUserService')
@@ -16,7 +15,6 @@ export class UserController {
 
   @GrpcMethod(USER_SERVICE_NAME, 'getAllUsers')
   async getAllUsers(
-    @Query()
     pageOptionsDto: UserPaginationOptionsDto,
   ): Promise<PageDto<UserDto>> {
     const [users, pageMetaDto] =

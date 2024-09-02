@@ -1,7 +1,9 @@
-/* eslint-disable unicorn/prefer-top-level-await */
 import { NestFactory, Reflector } from '@nestjs/core';
 
-import { ExpressAdapter, type NestExpressApplication } from '@nestjs/platform-express';
+import {
+  ExpressAdapter,
+  type NestExpressApplication,
+} from '@nestjs/platform-express';
 
 import {
   ClassSerializerInterceptor,
@@ -13,16 +15,26 @@ import { AppModule } from './app.module';
 import { SharedModule } from './shared/shared.module';
 import { ApiConfigService } from './shared/services/api-config.service';
 import { setupSwagger } from './setup-swagger';
+import helmet from 'helmet';
+import compression from 'compression';
+import morgan from 'morgan';
 
 export async function bootstrap(): Promise<NestExpressApplication> {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter());
-  await app.init();
+  const app = await NestFactory.create<NestExpressApplication>(
+    AppModule,
+    new ExpressAdapter(),
+  );
+  // Helmet helps secure Express apps by setting HTTP response headers.
+  app.use(helmet());
+  app.setGlobalPrefix('/api');
+  app.use(compression());
+  // HTTP request logger middleware for node.js
+  app.use(morgan('combined'));
+  app.enableVersioning();
 
   const reflector = app.get(Reflector);
 
-  app.useGlobalInterceptors(
-    new ClassSerializerInterceptor(reflector),
-  );
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -34,11 +46,11 @@ export async function bootstrap(): Promise<NestExpressApplication> {
     }),
   );
 
-    const configService = app.select(SharedModule).get(ApiConfigService);
+  const configService = app.select(SharedModule).get(ApiConfigService);
 
-    if (!configService.isProduction) {
-    setupSwagger(app);
+  if (!configService.isProduction) {
   }
+  setupSwagger(app);
 
   app.enableShutdownHooks();
 

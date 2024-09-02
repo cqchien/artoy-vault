@@ -17,13 +17,13 @@ import { AppModule } from './app.module';
 import { SystemExceptionFilter } from './filters/exception.filter';
 import { QueryFailedFilter } from './filters/query-failed.filter';
 import { SerializerInterceptor } from './interceptors/serializer-interceptor';
-import { protobufPackage } from './modules/user/user.pb';
+import { USER_SERVICE_PACKAGE_NAME } from 'modules/user/user.pb';
 
 export async function bootstrap(): Promise<INestMicroservice> {
   const app = await NestFactory.createMicroservice(AppModule, {
     transport: Transport.GRPC,
     options: {
-      package: protobufPackage,
+      package: USER_SERVICE_PACKAGE_NAME,
       protoPath: join(
         'node_modules/@cqchien/artoy-vault-service-protos/dist/src/proto/user-service/user.proto',
       ),

@@ -9,7 +9,7 @@
     "proto:install": "yarn add @cqchien/artoy-vault-service-protos@latest",
     "proto:user": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/@cqchien/artoy-vault-service-protos/dist/src/proto/user-service --ts_proto_out=src/user/ ./node_modules/@cqchien/artoy-vault-service-protos/dist/src/proto/user-service/user.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
     "proto:all": "yarn proto:user",
-    "build:prod": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main.js"
   },
@@ -23,10 +23,13 @@
     "@nestjs/microservices": "^10.4.1",
     "@nestjs/platform-express": "^10.4.1",
     "@nestjs/swagger": "^7.4.0",
-    "@nestjs/throttler": "^6.1.1",
+    "@nestjs/throttler": "^6.2.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "compression": "^1.7.4",
+    "helmet": "^7.1.0",
     "lodash": "^4.17.21",
+    "morgan": "^1.10.0",
     "parse-duration": "^1.1.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
@@ -34,9 +37,11 @@
     "tsc": "^2.0.4"
   },
   "devDependencies": {
+    "@types/compression": "^1.7.5",
     "@types/lodash": "^4.17.7",
-    "@types/node": "^22.3.0",
-    "ts-proto": "^2.0.2",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.5.2",
+    "ts-proto": "^2.0.3",
     "typescript": "^5.5.4"
   }
 }
