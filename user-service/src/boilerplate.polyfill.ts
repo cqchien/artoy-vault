@@ -17,21 +17,22 @@ declare global {
     interface ProcessEnv {
       PORT: number;
       NODE_ENV: 'development' | 'staging' | 'production';
-      SENTE_API_URL: string;
-      OSQUAD_API_URL?: string;
-      GUA_NAME: string;
-      SENTE_SECRET_KEY: string;
-      BASIC_AUTH_USERNAME: string;
-      BASIC_AUTH_PASSWORD: string;
-      OGEK_URL?: string;
-      OSQUAD_API_USERNAME?: string;
-      OSQUAD_API_PASSWORD?: string;
+      GH_TOKEN: string;
+      ENABLE_ORM_LOGS: boolean;
+
+      API_VERSION: string;
+      JWT_EXPIRATION_TIME: number;
+      JWT_PRIVATE_KEY: string;
+
       DB_HOST: string;
       DB_PORT: number;
       DB_USERNAME: string;
       DB_PASSWORD: string;
       DB_DATABASE: string;
-      ENABLE_ORM_LOGS: boolean;
+
+      REDIS_CACHE_ENABLED: boolean;
+      REDIS_HOST: string;
+      REDIS_PORT: number;
     }
   }
 }

@@ -1,38 +1,30 @@
-import type { ArgumentsHost, ExceptionFilter } from '@nestjs/common';
-import { Catch, HttpException, HttpStatus, Logger } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import type { ValidationError } from 'class-validator';
-import type { Response } from 'express';
-import { findKey, includes, isEmpty, snakeCase } from 'lodash';
+import type { ExceptionFilter } from '@nestjs/common';
+import { Catch, Logger } from '@nestjs/common';
 
-import { MetaResponseDto, ResponseDto } from '../common/dto/response.dto';
-import { CONSTRAINT_ERRORS } from './constraint-errors';
+import { status } from '@grpc/grpc-js';
+import { RpcException } from '@nestjs/microservices';
+import { Reflector } from '@nestjs/core';
 
 @Catch()
 export class SystemExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(SystemExceptionFilter.name);
-
   constructor(public reflector: Reflector) {}
 
-  catch(exception: Error | HttpException, host: ArgumentsHost): void {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-
-    let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message: string | ValidationError[] = exception.message;
+  catch(exception: any): any {
+    let statusCode = status.INTERNAL;
+    let message = exception.message;
     let error = '';
 
-    if (exception instanceof HttpException) {
-      statusCode = exception.getStatus();
-      const r = exception.getResponse() as {
-        error: string;
-        message: ValidationError[];
-      };
+    const errorResponse = exception.getError();
 
-      message = r.message;
-      error = r.error;
-      this.validationFilter(message);
-      this.logger.error(message);
+    // Check if errorResponse is an object
+    if (typeof errorResponse === 'object' && errorResponse !== null) {
+      // Extract message and error from the object if they exist
+      message = (errorResponse as any).message || message;
+      error = (errorResponse as any).error || '';
+    } else {
+      // If errorResponse is a string, use it directly
+      message = errorResponse as string;
     }
 
     this.logger.error(
@@ -40,48 +32,9 @@ export class SystemExceptionFilter implements ExceptionFilter {
       process.env.NODE_ENV !== 'production' && exception.stack,
     );
 
-    const metaResponseDto = new MetaResponseDto(
-      statusCode,
-      error || message.toString(),
-      findKey(
-        CONSTRAINT_ERRORS,
-        (value: string | string[]) =>
-          includes(value, error) ||
-          includes(value, message.toString()) ||
-          includes(value, statusCode.toString()),
-      ),
-    );
-
-    response.status(statusCode).json(new ResponseDto(null, metaResponseDto));
-  }
-
-  private validationFilter(validationErrors: ValidationError[]): void {
-    for (const validationError of validationErrors) {
-      const children = validationError.children;
-
-      if (children && !isEmpty(children)) {
-        this.validationFilter(children);
-
-        return;
-      }
-
-      delete validationError.children;
-
-      const constraints = validationError.constraints;
-
-      if (!constraints) {
-        return;
-      }
-
-      for (const [constraintKey, constraint] of Object.entries(constraints)) {
-        // convert default messages
-        if (!constraint) {
-          // convert error message to error.fields.{key} syntax for i18n translation
-          constraints[constraintKey] = `error.fields.${snakeCase(
-            constraintKey,
-          )}`;
-        }
-      }
-    }
+    throw new RpcException({
+      code: statusCode,
+      message,
+    });
   }
 }

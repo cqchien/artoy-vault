@@ -2,11 +2,6 @@ syntax = "proto3";
 
 package userService;
 
-message ServiceResponseMeta {
-    int32 statusCode = 1;
-    string message = 2;
-}
-
 message User {
     string id = 1;
     string createdAt = 2;
@@ -33,15 +28,9 @@ message GetAllUsersResponse {
 message GetAllUserRequest {
     int32 take = 1;
     int32 page = 2;
-    string q = 3;
-}
-
-
-message GetAllUserServiceResponse {
-    GetAllUsersResponse response = 1;
-    ServiceResponseMeta meta = 2;
+    optional string q = 3;
 }
 
 service UserService {
-  rpc getAllUsers(GetAllUserRequest) returns (GetAllUserServiceResponse);
+  rpc getAllUsers(GetAllUserRequest) returns (GetAllUsersResponse);
 }

@@ -1,3 +1,5 @@
+import './boilerplate.polyfill';
+
 import { NestFactory, Reflector } from '@nestjs/core';
 
 import {
@@ -23,6 +25,9 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
     new ExpressAdapter(),
+    {
+      bufferLogs: true,
+    },
   );
   // Helmet helps secure Express apps by setting HTTP response headers.
   app.use(helmet());
@@ -49,8 +54,8 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   const configService = app.select(SharedModule).get(ApiConfigService);
 
   if (!configService.isProduction) {
+    setupSwagger(app);
   }
-  setupSwagger(app);
 
   app.enableShutdownHooks();
 

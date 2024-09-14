@@ -4,20 +4,15 @@ import './boilerplate.polyfill';
 import { join } from 'node:path';
 
 import type { INestMicroservice } from '@nestjs/common';
-import {
-  ClassSerializerInterceptor,
-  HttpStatus,
-  UnprocessableEntityException,
-  ValidationPipe,
-} from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
-import { Transport } from '@nestjs/microservices';
+import { RpcException, Transport } from '@nestjs/microservices';
 
 import { AppModule } from './app.module';
-import { SystemExceptionFilter } from './filters/exception.filter';
-import { QueryFailedFilter } from './filters/query-failed.filter';
-import { SerializerInterceptor } from './interceptors/serializer-interceptor';
 import { USER_SERVICE_PACKAGE_NAME } from 'modules/user/user.pb';
+import { ValidationError } from 'class-validator';
+import { status as GrpcStatus } from '@grpc/grpc-js';
+import { SystemExceptionFilter } from 'filters/exception.filter';
 
 export async function bootstrap(): Promise<INestMicroservice> {
   const app = await NestFactory.createMicroservice(AppModule, {
@@ -33,23 +28,25 @@ export async function bootstrap(): Promise<INestMicroservice> {
 
   const reflector = app.get(Reflector);
 
-  app.useGlobalFilters(
-    new SystemExceptionFilter(reflector),
-    new QueryFailedFilter(reflector),
-  );
+  app.useGlobalFilters(new SystemExceptionFilter(reflector));
 
-  app.useGlobalInterceptors(
-    new ClassSerializerInterceptor(reflector),
-    new SerializerInterceptor(),
-  );
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
 
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       transform: true,
       dismissDefaultMessages: true,
-      exceptionFactory: (errors) => new UnprocessableEntityException(errors),
+      exceptionFactory: (errors: ValidationError[]) => {
+        const errorMessages = errors
+          .map((error) => JSON.stringify(error))
+          .join('; ');
+
+        return new RpcException({
+          code: GrpcStatus.INVALID_ARGUMENT,
+          message: `Validation failed: ${errorMessages}`,
+        });
+      },
     }),
   );
 

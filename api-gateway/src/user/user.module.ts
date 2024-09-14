@@ -1,5 +1,5 @@
+import { UserController } from './delivery/user.controller';
 import { Module } from '@nestjs/common';
-import { UserController } from './user.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { USER_SERVICE_NAME, USER_SERVICE_PACKAGE_NAME } from './user.pb';
 import { join } from 'path';
